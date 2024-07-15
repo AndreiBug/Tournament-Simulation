@@ -1,3 +1,2 @@
 # lanParty
 Tema PA
-asdghuagbhuadihgadgbaid
