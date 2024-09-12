@@ -14,12 +14,6 @@ typedef struct AVLNode {
 
 void printLevel(AVLNode* root, FILE* output_file, int level);
 
-void AVLinorder(AVLNode* root, FILE* output_file);
-
-void printLevel2(AVLNode *root, FILE* output_file, int level);
-
-//void insertBSTIntoAVL(BSTNode* root, AVLNode** AVLroot);
-
 void inorder(BSTNode* root, FILE* output_file);
 
 int maximum(int h1, int h2);

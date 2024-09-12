@@ -74,7 +74,7 @@ void addPointsToPlayers(Team* team) {
     Player_list* currentPlayer = team->players;
 
     while (currentPlayer != NULL) {
-        currentPlayer->player->points += 1.0;  // Increment each player's points by 1
+        currentPlayer->player->points += 1.0;
         currentPlayer = currentPlayer->next;
     }
 }
@@ -92,10 +92,8 @@ void addAtEnd(Team_list** head, Team* v) {
     newNode->next = NULL;
 
     if (*head == NULL) {
-        // If the list is empty, make the new node the head
         *head = newNode;
     } else {
-        // Traverse to the end of the list and add the new node
         Team_list *aux = *head;
         while (aux->next != NULL) {
             aux = aux->next;
@@ -106,35 +104,28 @@ void addAtEnd(Team_list** head, Team* v) {
 
 Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players) {
     Team_list* copy = NULL;
-    Team_list* current = NULL; // Pointer to keep track of the last copied team in the new list
+    Team_list* current = NULL;
 
-    // Traverse the original TeamList
     while (TeamList != NULL) {
-        // Allocate memory for the new team node
         Team_list* new_team_node = (Team_list*)malloc(sizeof(Team_list));
         new_team_node->team = (Team*)malloc(sizeof(Team));
         new_team_node->team->name = (char*)malloc(50 * sizeof(char));
 
-        // Copy the name of the team
         strcpy(new_team_node->team->name, TeamList->team->name);
-        new_team_node->team->players = NULL; // Initialize players list for the new team
+        new_team_node->team->players = NULL;
 
-        // Traverse through the players of the current team in TeamList
         Player_list* current_player = TeamList->team->players;
         int player_count = 0;
         while (current_player != NULL && player_count < nr_of_players) {
-            // Allocate memory for the new player node
             Player_list* new_player_node = (Player_list*)malloc(sizeof(Player_list));
             new_player_node->player = (Player*)malloc(sizeof(Player));
             new_player_node->player->firstName = (char*)malloc(25 * sizeof(char));
             new_player_node->player->secondName = (char*)malloc(25 * sizeof(char));
 
-            // Copy player data from 'current_player' to the new player node
             strcpy(new_player_node->player->firstName, current_player->player->firstName);
             strcpy(new_player_node->player->secondName, current_player->player->secondName);
-            new_player_node->player->points = current_player->player->points;  // Copy the points correctly
+            new_player_node->player->points = current_player->player->points;
 
-            // Insert the new player node at the end of the players list of the new team
             new_player_node->next = NULL;
             if (new_team_node->team->players == NULL) {
                 new_team_node->team->players = new_player_node;
@@ -146,12 +137,10 @@ Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players) {
                 temp->next = new_player_node;
             }
 
-            // Move to the next player in TeamList
             current_player = current_player->next;
             player_count++;
         }
 
-        // Link the new_team_node to the copied list
         new_team_node->next = NULL;
         if (copy == NULL) {
             copy = new_team_node;
@@ -160,8 +149,6 @@ Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players) {
             current->next = new_team_node;
             current = current->next;
         }
-
-        // Move to the next team in TeamList
         TeamList = TeamList->next;
     }
 

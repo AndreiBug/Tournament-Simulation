@@ -2,45 +2,13 @@
 
 void printLevel(AVLNode* root, FILE* output_file, int level){
     if (root != NULL){
-        printLevel(root->right, output_file, level-1);
-        if (level == 1) {
+        if (level == 2) {
             fprintf(output_file,"%s\n", root->val->name);
         }
-        printLevel(root->left, output_file, level-1);
+        printLevel(root->right, output_file, level+1);
+        printLevel(root->left, output_file, level+1);
     }
 }
-
-void AVLinorder(AVLNode* root, FILE* output_file){
-    if (root){
-        
-        /*for(int i = 0; i < nodeHeight(root); i++){
-            fprintf(output_file, "\t");
-        }*/
-
-        //if(nodeHeight(root) == 0) fprintf(output_file, "%s\n", root->left->left->val->name);
-        //AVLinorder(root->left, output_file);
-        //AVLinorder(root->right, output_file);
-        //fprintf(output_file, "%d\n", root->height);
-        fprintf(output_file, "%s\n", root->right->right->val->name);
-        fprintf(output_file, "%s\n", root->right->left->val->name);
-        fprintf(output_file, "%s\n", root->left->right->val->name);
-        fprintf(output_file, "%s\n", root->left->left->val->name);
-        
-        
-        
-        
-        //fprintf(output_file, "%s\n", root->val->name);
-        
-    }
-}
-
-/*void insertBSTIntoAVL(BSTNode* root, AVLNode** AVLroot) {
-    if (root) {
-        insertBSTIntoAVL(root->right, AVLroot);  // Traverse the left subtree
-        *AVLroot = AVL_insert(*AVLroot, root->val);  // Insert current node into AVL
-        insertBSTIntoAVL(root->left, AVLroot); // Traverse the right subtree
-    }
-}*/
 
 void inorder(BSTNode* root, FILE* output_file){
     if (root){
@@ -80,7 +48,7 @@ int nodeHeight(AVLNode *node) {
 
 BSTNode *BST_newNode(Team *data) {
     BSTNode *newNode = malloc(sizeof(BSTNode));
-    if (newNode == NULL) return NULL;
+    if (newNode == NULL) malloc_error();
     newNode->val = data;
     newNode->left = newNode->right = NULL;
     return newNode;
@@ -153,7 +121,7 @@ void decideRotation(AVLNode **nodePtr, int k, float scoreOfTeam, float scoreOfLe
     } else if (k < -1) {
         if (scoreOfTeam > scoreOfRightChild) {
             *nodePtr = leftRotation(node);
-        } else if (k < -1 && scoreOfTeam < scoreOfRightChild) {
+        } else if (scoreOfTeam < scoreOfRightChild) {
         *nodePtr = RLRotation(node);
         } else if (scoreOfTeam == scoreOfRightChild) {
             if (strcmp(node->right->val->name, team->name) > 0) {

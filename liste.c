@@ -9,14 +9,12 @@ void delete_team_with_min_points(Team_list** head) {
     int min_points = 0;
     int current_points = 0;
 
-    // Calcularea punctelor pentru prima echipă
     Player_list* player = current->team->players;
     while (player != NULL) {
         min_points += player->player->points;
         player = player->next;
     }
 
-    // Găsirea echipei cu cele mai puține puncte
     while (current != NULL) {
         current_points = 0;
         player = current->team->players;
@@ -35,16 +33,12 @@ void delete_team_with_min_points(Team_list** head) {
         current = current->next;
     }
 
-    // Ștergerea echipei cu cele mai puține puncte
     if (min_team == *head) {
-        // Dacă echipa cu cele mai puține puncte este prima echipă din listă
         *head = min_team->next;
     } else {
-        // Dacă echipa este undeva în mijlocul sau la sfârșitul listei
         prev_min_team->next = min_team->next;
     }
-
-    // Eliberarea memoriei pentru echipă și jucători
+    
     Player_list* current_player = min_team->team->players;
     while (current_player != NULL) {
         Player_list* temp_player = current_player;

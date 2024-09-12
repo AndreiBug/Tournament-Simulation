@@ -31,11 +31,11 @@ int main(int argc, char* argv[]) {
         new_team->team->name = (char*)malloc(50 * sizeof(char));
         if (new_team->team->name == NULL) malloc_error();
         new_team->team->players = NULL;
-        new_team->next = teamList;  // adăugarea la începutul listei
+        new_team->next = teamList;
         teamList = new_team;
 
         fscanf(input_file, "%d", &nr_of_players);
-        fgetc(input_file);  // pentru a consuma newline-ul rămas
+        fgetc(input_file);
 
         if (fgets(new_team->team->name, 50, input_file) == NULL) malloc_error();
 
@@ -202,13 +202,11 @@ int main(int argc, char* argv[]) {
         savedTeams = savedTeams->next;
     }
 
-    int level = nodeHeight(AVLroot);
-    AVLinorder(AVLroot, output_file);
-    // printLevel(AVLroot, output_file, level);
-
+    int level = 0;
+    printLevel(AVLroot, output_file, level);
     deleteAVLTree(AVLroot);
 
     ReleaseMemory(teamList);
     CloseFiles(tasks, input_file, output_file);
-}
 }}}}
+}
