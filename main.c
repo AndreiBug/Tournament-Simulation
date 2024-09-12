@@ -5,36 +5,31 @@
 #include "arbori.c"
 
 int main(int argc, char* argv[]) {
+    
     FILE* tasks = fopen(argv[1], "r");
     FILE* input_file = fopen(argv[2], "r");
     FILE* output_file = fopen(argv[3], "w");
 
-    if (tasks == NULL || input_file == NULL || output_file == NULL) {
-        perror("Error opening files");
-        return EXIT_FAILURE;
+    if (tasks == NULL || input_file == NULL || output_file == NULL) malloc_error();
+    int task[5];
+    for(int i = 0; i < 5; i++) {
+        fscanf(tasks, "%d", &task[i]);
     }
-
+    
+    if(task[0] == 1){
     int nr_of_teams, nr_of_players;
     fscanf(input_file, "%d", &nr_of_teams);
 
     Team_list* teamList = NULL;
-
+    
     for (int i = 0; i < nr_of_teams; i++) {
         Team_list* new_team = (Team_list*)malloc(sizeof(Team_list));
-        if (new_team == NULL) {
-            perror("Failed to allocate memory for new_team");
-            return EXIT_FAILURE;
-        }
+        if (new_team == NULL) malloc_error();
+
         new_team->team = (Team*)malloc(sizeof(Team));
-        if (new_team->team == NULL) {
-            perror("Failed to allocate memory for new_team->team");
-            return EXIT_FAILURE;
-        }
+        if (new_team->team == NULL) malloc_error();
         new_team->team->name = (char*)malloc(50 * sizeof(char));
-        if (new_team->team->name == NULL) {
-            perror("Failed to allocate memory for new_team->team->name");
-            return EXIT_FAILURE;
-        }
+        if (new_team->team->name == NULL) malloc_error();
         new_team->team->players = NULL;
         new_team->next = teamList;  // adăugarea la începutul listei
         teamList = new_team;
@@ -42,29 +37,23 @@ int main(int argc, char* argv[]) {
         fscanf(input_file, "%d", &nr_of_players);
         fgetc(input_file);  // pentru a consuma newline-ul rămas
 
-        if (fgets(new_team->team->name, 50, input_file) == NULL) {
-            perror("Error reading team name");
-            return EXIT_FAILURE;
-        }
+        if (fgets(new_team->team->name, 50, input_file) == NULL) malloc_error();
+
+        removeSpaces(new_team->team->name);
 
         for (int j = 0; j < nr_of_players; j++) {
             Player_list* new_player = (Player_list*)malloc(sizeof(Player_list));
             if (new_player == NULL) {
-                perror("Failed to allocate memory for new_player");
-                return EXIT_FAILURE;
+                malloc_error();
             }
             new_player->player = (Player*)malloc(sizeof(Player));
-            if (new_player->player == NULL) {
-                perror("Failed to allocate memory for new_player->player");
-                return EXIT_FAILURE;
-            }
+            if (new_player->player == NULL) malloc_error();
 
             new_player->player->firstName = (char*)malloc(25 * sizeof(char));
             new_player->player->secondName = (char*)malloc(25 * sizeof(char));
             if (new_player->player->firstName == NULL ||
                 new_player->player->secondName == NULL) {
-                perror("Failed to allocate memory for player names");
-                return EXIT_FAILURE;
+                malloc_error();
             }
 
             if (fscanf(input_file, "%s", new_player->player->firstName) !=
@@ -72,8 +61,7 @@ int main(int argc, char* argv[]) {
                 fscanf(input_file, "%s", new_player->player->secondName) !=
                     1 ||
                 fscanf(input_file, "%f", &new_player->player->points) != 1) {
-                fprintf(stderr, "Error reading player data\n");
-                return EXIT_FAILURE;
+                malloc_error();
             }
 
             new_player->next = new_team->team->players;
@@ -87,8 +75,9 @@ int main(int argc, char* argv[]) {
     }
 
     ShowTeams(teamList, output_file);
-
+    
     // task 3
+    if(task[2] == 1){
     int roundNr = 1, top_teams = 8;
     float firstTeamPoints, secondTeamPoints;
     Team_list* savedTeams = NULL;
@@ -101,23 +90,20 @@ int main(int argc, char* argv[]) {
 
         while (teamList_copy != NULL) {
             Match* match = (Match*)malloc(sizeof(Match));
-            if (match == NULL) {
-                perror("Failed to allocate memory for match");
-                return EXIT_FAILURE;
-            }
+            if (match == NULL) malloc_error();
             char* match_line = (char*)malloc(table_line * sizeof(char));
-            if (match_line == NULL) {
-                perror("Failed to allocate memory for match_line");
-                return EXIT_FAILURE;
+            if (match_line == NULL) malloc_error();
+
+            for(int i = 0; i < table_line; i++){
+                match_line[i] = ' '; 
             }
-            memset(match_line, ' ', table_line - 1);
             match_line[table_line - 1] = '\0';
 
             match->firstTeam = teamList_copy->team;
             teamList_copy = teamList_copy->next;
 
             int i = 0;
-            while (match->firstTeam->name[i] != '\n') {
+            while (match->firstTeam->name[i] != '\0') {
                 match_line[i] = match->firstTeam->name[i];
                 i++;
             }
@@ -131,7 +117,7 @@ int main(int argc, char* argv[]) {
                 match_line[pos_in_table + j] = match->secondTeam->name[j];
             }
 
-            fprintf(output_file, "%s", match_line);
+            fprintf(output_file, "%s\n", match_line);
             free(match_line);
 
             enQueue(queue, match);
@@ -161,10 +147,7 @@ int main(int argc, char* argv[]) {
         deleteStack(&losers);
 
         char* winners_line = (char*)malloc(sizeLineWinners * sizeof(char));
-        if (winners_line == NULL) {
-            perror("Failed to allocate memory for winners_line");
-            return EXIT_FAILURE;
-        }
+        if (winners_line == NULL) malloc_error();
 
         fprintf(output_file, "\nWINNERS OF ROUND NO:%d\n", roundNr);
         Team_list* newTeamList = NULL;
@@ -175,7 +158,7 @@ int main(int argc, char* argv[]) {
             memset(winners_line, ' ', sizeLineWinners - 1);
             winners_line[34] = '-';
             winners_line[sizeLineWinners - 1] = '\0';
-            strncpy(winners_line, winner->name, strlen(winner->name) - 1);
+            strncpy(winners_line, winner->name, strlen(winner->name));
 
             float points = calculateTeamPoints(winner);
             char char_points[6];
@@ -188,7 +171,7 @@ int main(int argc, char* argv[]) {
         }
 
         if(contor_teams == top_teams){
-            savedTeams = CopyTeamList(newTeamList, newTeamList->team->players, nr_of_players);
+            savedTeams = CopyTeamList(newTeamList, nr_of_players);
         }
 
         free(winners_line);
@@ -200,7 +183,7 @@ int main(int argc, char* argv[]) {
     }
 
     // task 4
-
+    if(task[3] == 1){
     BSTNode* root = NULL;
     createBSTTree(&root, savedTeams);
     fprintf(output_file, "\n");
@@ -210,15 +193,22 @@ int main(int argc, char* argv[]) {
     deleteBSTTree(root);
 
     // task 5
+    if(task[4] == 1){
     AVLNode* AVLroot = NULL;
     fprintf(output_file, "\nTHE LEVEL 2 TEAMS ARE: \n");
-    
-    insertBSTIntoAVL(root, &AVLroot);
-    int level = 0;
-    printLevel2(AVLroot, output_file, level);
+
+    while(savedTeams != NULL){
+        AVLroot = AVL_insert(AVLroot, savedTeams->team);
+        savedTeams = savedTeams->next;
+    }
+
+    int level = nodeHeight(AVLroot);
+    AVLinorder(AVLroot, output_file);
+    // printLevel(AVLroot, output_file, level);
 
     deleteAVLTree(AVLroot);
 
     ReleaseMemory(teamList);
     CloseFiles(tasks, input_file, output_file);
 }
+}}}}
