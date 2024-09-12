@@ -1,48 +1,64 @@
 #include "arbori.h"
 
-void printLevel2(AVLNode *root, FILE* output_file, int currentLevel) {
-    if (root == NULL) {
-        return;
+void printLevel(AVLNode* root, FILE* output_file, int level){
+    if (root != NULL){
+        printLevel(root->right, output_file, level-1);
+        if (level == 1) {
+            fprintf(output_file,"%s\n", root->val->name);
+        }
+        printLevel(root->left, output_file, level-1);
     }
-
-    if (currentLevel == 2) {
-        fprintf(output_file, "%s", root->val->name);
-        return;  // No need to go deeper once we find nodes at level 2
-    }
-
-    printLevel2(root->right, output_file, currentLevel + 1);
-    printLevel2(root->left, output_file, currentLevel + 1);
 }
 
+void AVLinorder(AVLNode* root, FILE* output_file){
+    if (root){
+        
+        /*for(int i = 0; i < nodeHeight(root); i++){
+            fprintf(output_file, "\t");
+        }*/
 
-void insertBSTIntoAVL(BSTNode* root, AVLNode** AVLroot) {
+        //if(nodeHeight(root) == 0) fprintf(output_file, "%s\n", root->left->left->val->name);
+        //AVLinorder(root->left, output_file);
+        //AVLinorder(root->right, output_file);
+        //fprintf(output_file, "%d\n", root->height);
+        fprintf(output_file, "%s\n", root->right->right->val->name);
+        fprintf(output_file, "%s\n", root->right->left->val->name);
+        fprintf(output_file, "%s\n", root->left->right->val->name);
+        fprintf(output_file, "%s\n", root->left->left->val->name);
+        
+        
+        
+        
+        //fprintf(output_file, "%s\n", root->val->name);
+        
+    }
+}
+
+/*void insertBSTIntoAVL(BSTNode* root, AVLNode** AVLroot) {
     if (root) {
         insertBSTIntoAVL(root->right, AVLroot);  // Traverse the left subtree
         *AVLroot = AVL_insert(*AVLroot, root->val);  // Insert current node into AVL
         insertBSTIntoAVL(root->left, AVLroot); // Traverse the right subtree
     }
-}
+}*/
 
 void inorder(BSTNode* root, FILE* output_file){
     if (root){
         inorder(root->right, output_file);
         char* winners_line = (char*)malloc(sizeLineWinners * sizeof(char));
-        if (winners_line == NULL) {
-            perror("Failed to allocate memory for winners_line");
-            exit(EXIT_FAILURE);
+        if (winners_line == NULL) malloc_error();
+        for(int i = 0; i < sizeLineWinners; i++){
+                winners_line[i] = ' '; 
         }
-        memset(winners_line, ' ', sizeLineWinners - 1);
         winners_line[34] = '-';
         winners_line[sizeLineWinners - 1] = '\0';
-        strncpy(winners_line, root->val->name, strlen(root->val->name) - 1);
+        strncpy(winners_line, root->val->name, strlen(root->val->name));
 
         float points = calculateTeamPoints(root->val);
-        char char_points[6];
-        snprintf(char_points, 6, "%.2f", points);
 
-        fprintf(output_file, "%s%s\n", winners_line, char_points);
+        fprintf(output_file, "%s%.2f\n", winners_line, points);
+        free(winners_line);
         inorder(root->left, output_file);
-        
     }
 }
 
@@ -99,7 +115,7 @@ void createBSTTree(BSTNode **root, Team_list *teams) {
 
 AVLNode *createNode(Team *team) {
     AVLNode *node = malloc(sizeof(AVLNode));
-    if (node == NULL) return NULL;
+    if (node == NULL) malloc_error();
     node->val = team;
     node->height = 0;
     node->left = node->right = NULL;
@@ -124,24 +140,29 @@ void decideRotation(AVLNode **nodePtr, int k, float scoreOfTeam, float scoreOfLe
     if (k > 1) {
         if (scoreOfTeam < scoreOfLeftChild) {
             *nodePtr = rightRotation(node);
+        } else if (scoreOfTeam > scoreOfLeftChild) {
+        *nodePtr = LRRotation(node);
         } else if (scoreOfTeam == scoreOfLeftChild) {
-            if (strcmp(node->left->val->name, team->name) > 0) {
+            if (strcmp(node->left->val->name, team->name) < 0) {
                 *nodePtr = rightRotation(node);
+            } else if (strcmp(node->left->val->name, team->name) > 0){
+                *nodePtr = LRRotation(node);
             }
-        }
+        } 
+    
     } else if (k < -1) {
         if (scoreOfTeam > scoreOfRightChild) {
             *nodePtr = leftRotation(node);
+        } else if (k < -1 && scoreOfTeam < scoreOfRightChild) {
+        *nodePtr = RLRotation(node);
         } else if (scoreOfTeam == scoreOfRightChild) {
-            if (strcmp(node->right->val->name, team->name) < 0) {
+            if (strcmp(node->right->val->name, team->name) > 0) {
                 *nodePtr = leftRotation(node);
+            } else if (strcmp(node->right->val->name, team->name) < 0){
+                *nodePtr = RLRotation(node);
             }
         }
-    } else if (k > 1 && scoreOfTeam > scoreOfLeftChild) {
-        *nodePtr = RLRotation(node);
-    } else if (k < -1 && scoreOfTeam < scoreOfRightChild) {
-        *nodePtr = LRRotation(node);
-    }
+    }  
 }
 
 AVLNode *AVL_insert(AVLNode *node, Team *team) {
@@ -157,9 +178,9 @@ AVLNode *AVL_insert(AVLNode *node, Team *team) {
     } else if (scoreOfTeam > scoreOfNode) {
         node->right = AVL_insert(node->right, team);
     } else {
-        if (strcmp(node->val->name, team->name) > 0) {
+        if (strcmp(node->val->name, team->name) < 0) {
             node->left = AVL_insert(node->left, team);
-        } else if (strcmp(node->val->name, team->name) < 0) {
+        } else if (strcmp(node->val->name, team->name) > 0) {
             node->right = AVL_insert(node->right, team);
         }
     }
@@ -178,12 +199,10 @@ AVLNode *AVL_insert(AVLNode *node, Team *team) {
 AVLNode *rightRotation(AVLNode *z) {
     AVLNode *y = z->left;
     AVLNode *T3 = y->right;
-
     y->right = z;
     z->left = T3;
-
-    z->height = maximum(nodeHeight(z->left), nodeHeight(z->right)) + 1;
-    y->height = maximum(nodeHeight(y->left), nodeHeight(y->right)) + 1;
+    z->height = (maximum(nodeHeight(z->left), nodeHeight(z->right))) + 1;
+    y->height = (maximum(nodeHeight(y->left), nodeHeight(y->right))) + 1;
     return y;
 }
 
@@ -192,8 +211,8 @@ AVLNode *leftRotation(AVLNode *z) {
     AVLNode *T2 = y->left;
     y->left = z;
     z->right = T2;
-    z->height = maximum(nodeHeight(z->left), nodeHeight(z->right)) + 1;
-    y->height = maximum(nodeHeight(y->left), nodeHeight(y->right)) + 1;
+    z->height = (maximum(nodeHeight(z->left), nodeHeight(z->right))) + 1;
+    y->height = (maximum(nodeHeight(y->left), nodeHeight(y->right))) + 1;
     return y;
 }
 

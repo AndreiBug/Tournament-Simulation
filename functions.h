@@ -5,8 +5,12 @@
 #include "coada.h"
 #include <math.h>
 #include <ctype.h>
-#define table_line 69
+#define table_line 68
 #define sizeLineWinners 38
+
+void malloc_error();
+
+void removeSpaces(char *str);
 
 void ReleaseMemory(Team_list* teamList);
 
@@ -22,4 +26,4 @@ void addPointsToPlayers(Team* team);
 
 void addAtEnd(Team_list** head, Team* v);
 
-Team_list* CopyTeamList(Team_list* TeamList, Player_list* players, int nr_of_players);
+Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players);

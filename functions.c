@@ -1,5 +1,19 @@
 #include "functions.h"
 
+void malloc_error(){
+    perror("Failed to allocate memory using malloc.");
+    exit(EXIT_FAILURE);
+}
+
+void removeSpaces(char *str) {
+    int len = strlen(str);
+    
+    while (len > 0 && (str[len - 1] == ' ' || str[len - 1] == '\n' || str[len - 1] == '\r')) {
+        str[len - 1] = '\0';
+        len--;
+    }
+}
+
 void ReleaseMemory(Team_list* teamList){
     Team_list* current_team = teamList;
     while (current_team != NULL) {
@@ -39,7 +53,7 @@ int PowerOf2(int number){
 void ShowTeams(Team_list* teamList, FILE* output_file){
     Team_list* current_team = teamList;
     while (current_team != NULL) {
-        fprintf(output_file, "%s", current_team->team->name);
+        fprintf(output_file, "%s\n", current_team->team->name);
         current_team = current_team->next;
     }
 }
@@ -90,7 +104,7 @@ void addAtEnd(Team_list** head, Team* v) {
     }
 }
 
-Team_list* CopyTeamList(Team_list* TeamList, Player_list* players, int nr_of_players) {
+Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players) {
     Team_list* copy = NULL;
     Team_list* current = NULL; // Pointer to keep track of the last copied team in the new list
 
