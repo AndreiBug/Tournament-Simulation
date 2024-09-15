@@ -30,3 +30,9 @@ typedef struct Match{
 } Match;
 
 void delete_team_with_min_points(Team_list** head);
+
+void addAtEnd(Team_list** head, Team* v);
+
+void addAtBeginning(Team_list **head, Team* v);
+
+Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players);

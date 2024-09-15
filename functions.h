@@ -3,6 +3,7 @@
 #include "liste.h"
 #include "stiva.h"
 #include "coada.h"
+#include "arbori.h"
 #include <math.h>
 #include <ctype.h>
 #define table_line 68
@@ -23,7 +24,3 @@ void ShowTeams(Team_list* teamList, FILE* output_file);
 float calculateTeamPoints(Team* team);
 
 void addPointsToPlayers(Team* team);
-
-void addAtEnd(Team_list** head, Team* v);
-
-Team_list* CopyTeamList(Team_list* TeamList, int nr_of_players);
