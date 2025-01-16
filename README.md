@@ -1,37 +1,62 @@
-# lanParty
-Tema PA
+# LanParty
 
--TASK I-
-1. I opened the files from which the information needs to be processed and I declared all the variables that i will use throughout the code;
-2. I read the number of teams and created a for loop in which I read all the teams with their names. In this loop i created another for loop to read the players with their names and individual points;
-3. I created a function to erase all the possible spaces or endlines from the end of the team name;
-4. I added every new team to the beginning of the list;
-5. I remember the beginning of the team and the beginning of every team players for future processing;
+A program simulating a gaming tournament between teams. The tasks are structured step-by-step for clarity and efficiency.
 
--TASK II-
-1. For task 2 I created a while loop and I deleted the teams with the lowest score with delete_team_with_min_points function until the number of teams was equal to a power of 2;
-2. I updated the number of teams every iteration;
-3. In the end, I made a function ShowTeams that writes all the team names in the output file.
+---
 
--TASK III-
-1. I declared the variables that will help me completing this task;
-2. I made a while loop that will iterate until only one team will be left which will be our winner;
-3. I made another while loop in which I wrote all the matches from the respective round in the output file;
-4. Using a data structure Match containing 2 teams that will play against each other I started storing 2 teams at a time;
-5. I declared a string match_line that I used to display the matches between every 2 teams;
-6. After storing the matches in the Match structure, i enqued them in a queue;
-7. When the writing of the matches is finished, I made another while loop where I displayed all the winners of the round;
-8. I divided the teams in 2 stacks: winners and losers, depending on the team points;
-9. For the team points I used the calculateTeamPoints function where I made the average of all player points;
-10. Using another string I displayed the winners of the respective round and erased the losers stack;
-11. In the end, I made a copy of the last 8 teams remaining for the following tasks and i deleted and freed all the remaining variables;
+## **Task I: Initial Setup**
+1. Opened the input files and declared all necessary variables for processing.
+2. Read the number of teams and iteratively processed team data:
+   - Each team has a name and a list of players with their names and points.
+3. Created a function to remove trailing spaces or newline characters from team names.
+4. Added each new team to the beginning of the list for easier manipulation.
+5. Stored references to the start of the team list and player list for future use.
 
--TASK IV-
-1. For this task I created a BST tree using the createBSTTree function;
-2. I wrote the team names in the output file using inorder traversal for diplaying them in a correct order: first the teams with the highest score followed by the others;
-3. Lastly, I deleted the BST tree;
+---
 
--TASK V-
-1. I created an AVL tree which I populated by using AVL_insert function. This will take the teams from the savedTeams structure and order it in a AVL tree;
-2. After creating the tree, I displayed the teams on the level 2 using printLevel function;
-3. Finally, I deleted the AVL tree and in the end of the code I released the memory used and closed all the files.
+## **Task II: Eliminating Teams**
+1. Implemented a while loop to reduce the number of teams to the nearest power of 2:
+   - Used the `delete_team_with_min_points` function to remove the lowest-scoring teams.
+2. Updated the team count after every iteration.
+3. Created a `ShowTeams` function to display the remaining team names in the output file.
+
+---
+
+## **Task III: Tournament Rounds**
+1. Declared additional variables to manage the tournament rounds.
+2. Used a while loop to continue until only one team remained, declaring it the winner.
+3. For each round:
+   - Wrote matchups to the output file.
+   - Created a `Match` structure to pair two competing teams.
+   - Displayed match details using a `match_line` string.
+   - Enqueued matches into a queue for further processing.
+4. Determined winners and losers:
+   - Winners and losers were stored in separate stacks.
+   - Used the `calculateTeamPoints` function to determine team scores based on the average player points.
+5. Displayed the winners of each round and removed the losers.
+6. Saved the last 8 teams for subsequent tasks, then cleaned up memory and resources.
+
+---
+
+## **Task IV: Binary Search Tree (BST)**
+1. Built a BST using the `createBSTTree` function:
+   - Teams were ordered by their scores.
+2. Used an in-order traversal to write team names to the output file in descending order of scores.
+3. Deleted the BST to free resources after processing.
+
+---
+
+## **Task V: AVL Tree**
+1. Constructed an AVL tree using the `AVL_insert` function:
+   - Populated the tree with the top 8 teams from the saved list.
+2. Displayed teams at level 2 of the AVL tree using the `printLevel` function.
+3. Deleted the AVL tree and released all allocated memory, closing files as the program concluded.
+
+---
+
+## **Highlights**
+- **Efficient Algorithms**: Leveraged data structures like stacks, queues, BST, and AVL trees for optimal performance.
+- **Clear Workflow**: Tasks are modularized for better readability and maintenance.
+- **Dynamic Output**: Real-time display of matches, winners, and team rankings.
+
+This program effectively simulates a gaming tournament, handling complex operations with well-structured and reusable components.
